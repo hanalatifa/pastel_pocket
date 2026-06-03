@@ -1,7 +1,5 @@
-// State Aplikasi (Mengambil real data dari LocalStorage browser)
 let transactions = JSON.parse(localStorage.getItem('pastel_transactions')) || [];
 
-// Ambil Element DOM
 const form = document.getElementById('transaction-form');
 const txTitle = document.getElementById('tx-title');
 const txAmount = document.getElementById('tx-amount');
@@ -9,12 +7,10 @@ const txCategory = document.getElementById('tx-category');
 const transactionList = document.getElementById('transaction-list');
 const filterCategory = document.getElementById('filter-category');
 
-// Element Pencatat Saldo
 const totalBalanceEl = document.getElementById('total-balance');
 const totalIncomeEl = document.getElementById('total-income');
 const totalExpenseEl = document.getElementById('total-expense');
 
-// Format Angka ke Rupiah
 function formatRupiah(angka) {
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -23,7 +19,6 @@ function formatRupiah(angka) {
     }).format(angka);
 }
 
-// MASALAH FIX DI SINI: Hitung Rekapitulasi Keuangan dengan Benar
 function updateDashboard() {
     const income = transactions
         .filter(tx => tx.type === 'income')
@@ -36,13 +31,11 @@ function updateDashboard() {
 
     const balance = income - expense;
 
-    // Update Tampilan Dashboard
     totalBalanceEl.innerText = formatRupiah(balance);
     totalIncomeEl.innerText = formatRupiah(income);
     totalExpenseEl.innerText = formatRupiah(expense);
 }
 
-// Render Data Transaksi ke Layar secara Real-Time
 function renderTransactions(filter = 'all') {
     transactionList.innerHTML = '';
 
@@ -59,7 +52,6 @@ function renderTransactions(filter = 'all') {
         return;
     }
 
-    // Tampilkan dari yang paling baru (Descending)
     filteredTransactions.slice().reverse().forEach(tx => {
         const card = document.createElement('div');
         card.className = `transaction-card bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between transition-all hover:shadow-md mb-3`;
@@ -90,15 +82,13 @@ function renderTransactions(filter = 'all') {
     });
 }
 
-// Aksi Menambah Transaksi Baru (Event Listener Form)
 form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const selectedType = document.querySelector('input[name="tx-type"]:checked').value;
     
-    // Membuat Object Data Real Baru
     const newTransaction = {
-        id: Date.now(), // ID Unik berbasis waktu milidetik
+        id: Date.now(), 
         title: txTitle.value.trim(),
         amount: parseFloat(txAmount.value),
         type: selectedType,
@@ -106,35 +96,28 @@ form.addEventListener('submit', (e) => {
         date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
     };
 
-    // Masukkan ke Array State
     transactions.push(newTransaction);
     
-    // Simpan ke LocalStorage & Update UI
     saveData();
     
-    // Reset Form Input ke Semula
     form.reset();
     document.querySelector('input[value="income"]').checked = true;
 });
 
-// Aksi Hapus Transaksi Berdasarkan ID
 window.deleteTransaction = function(id) {
     transactions = transactions.filter(tx => tx.id !== id);
     saveData();
 }
 
-// Filter Kategori saat Diubah
 filterCategory.addEventListener('change', (e) => {
     renderTransactions(e.target.value);
 });
 
-// Fungsi Sinkronisasi Data ke LocalStorage Browser
 function saveData() {
     localStorage.setItem('pastel_transactions', JSON.stringify(transactions));
     updateDashboard();
     renderTransactions(filterCategory.value);
 }
 
-// Jalankan Fungsi Utama Saat Aplikasi Pertama Kali Dimuat
 updateDashboard();
 renderTransactions();
