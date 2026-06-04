@@ -2,16 +2,16 @@ body {
     font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-@keyframes popIn {
-    0% { opacity: 0; transform: scale(0.97) translateY(5px); }
-    100% { opacity: 1; transform: scale(1) translateY(0); }
+/* Transisi Halus Saat Menu Diklik */
+.page-content {
+    animation: fadeIn 0.3s ease-in-out forwards;
 }
 
-.transaction-card {
-    animation: popIn 0.2s ease-out forwards;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #E1BEE7; border-radius: 10px; }
